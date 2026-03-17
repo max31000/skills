@@ -1,0 +1,7 @@
+{
+  "target": "opencode",
+  "homeSubdir": ".config/opencode",
+  "settingsFile": "opencode.json",
+  "skillsDir": "skills",
+  "commandsDir": "commands"
+}

@@ -1,0 +1,8 @@
+{
+  "target": "claude",
+  "homeSubdir": ".claude",
+  "settingsFile": "settings.json",
+  "skillsDir": "skills",
+  "commandsDir": "commands",
+  "agentsDir": "agents"
+}

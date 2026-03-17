@@ -1,0 +1,15 @@
+{
+  "packages": [
+    { "id": "Git.Git" },
+    { "id": "jqlang.jq" },
+    { "id": "BurntSushi.ripgrep.MSVC" },
+    { "id": "sharkdp.fd" },
+    { "id": "GitHub.cli" },
+    { "id": "Python.Python.3.12" },
+    { "id": "jdx.mise" },
+    { "id": "Oven-sh.Bun" },
+    { "id": "OpenJS.NodeJS.LTS" },
+    { "id": "GoLang.Go" },
+    { "id": "Microsoft.DotNet.SDK.8" }
+  ]
+}

@@ -1,0 +1,6 @@
+[tools]
+bun = "latest"
+node = "lts"
+python = "3.12"
+go = "latest"
+dotnet = "8"

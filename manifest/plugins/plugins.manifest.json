@@ -1,0 +1,37 @@
+{
+  "plugins": [
+    {
+      "id": "compound-engineering",
+      "source": "EveryInc/compound-engineering-plugin",
+      "pluginId": "compound-engineering",
+      "installMethod": "compound-bunx",
+      "mode": "install",
+      "targets": ["opencode"],
+      "scope": "global",
+      "requiredBinaries": ["bunx"],
+      "requiresNetwork": true,
+      "required": false,
+      "verifyPaths": [
+        "${HOME}/.config/opencode/commands",
+        "${HOME}/.config/opencode/opencode.json"
+      ],
+      "enabled": true,
+      "notes": "Installs Compound Engineering for OpenCode when bunx is available. Safe to keep enabled because preflight failures are treated as optional skips."
+    },
+    {
+      "id": "dotnet-agent-skills",
+      "source": "dotnet/skills",
+      "pluginId": "dotnet",
+      "installMethod": "manual-plugin",
+      "mode": "install",
+      "targets": ["claude"],
+      "scope": "global",
+      "requiredBinaries": [],
+      "requiresNetwork": false,
+      "required": false,
+      "verifyPaths": [],
+      "enabled": false,
+      "notes": "Non-interactive CLI installation is not documented yet. Use /plugin manually if needed."
+    }
+  ]
+}

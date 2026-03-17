@@ -1,0 +1,22 @@
+{
+  "packages": {
+    "git": { "required_now": true },
+    "jq": { "required_now": false },
+    "ripgrep": { "required_now": false },
+    "fd": { "required_now": false },
+    "gh": { "required_now": false },
+    "python": { "required_now": true },
+    "mise": { "required_now": true },
+    "bun": { "required_now": false },
+    "node": { "required_now": false },
+    "go": { "required_now": false },
+    "dotnet": { "required_now": false }
+  },
+  "tools": {
+    "bun": { "required_now": false },
+    "node": { "required_now": false },
+    "python": { "required_now": true },
+    "go": { "required_now": false },
+    "dotnet": { "required_now": false }
+  }
+}

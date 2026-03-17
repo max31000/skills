@@ -1,0 +1,11 @@
+{
+  "agents": [
+    {
+      "id": "bootstrap-maintainer",
+      "source": "shared",
+      "path": "bootstrap-maintainer.md",
+      "targets": ["claude"],
+      "installMode": "copy"
+    }
+  ]
+}

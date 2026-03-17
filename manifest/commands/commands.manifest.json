@@ -1,0 +1,11 @@
+{
+  "commands": [
+    {
+      "id": "bootstrap-status",
+      "source": "shared",
+      "path": "bootstrap-status.md",
+      "targets": ["claude", "opencode"],
+      "installMode": "copy"
+    }
+  ]
+}
