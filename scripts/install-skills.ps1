@@ -85,7 +85,6 @@ foreach ($s in $AllSkills) {
     if (Test-Path $p) { $existing += $s }
 }
 
-$Overwrite = $false
 if ($existing.Count -gt 0) {
     Write-Host "Already installed ($($existing.Count)):" -ForegroundColor Yellow
     foreach ($s in $existing) { Write-Host "    $s" }

@@ -4,7 +4,6 @@ from __future__ import annotations
 import argparse
 import shutil
 import json
-import os
 from pathlib import Path
 
 
@@ -31,7 +30,6 @@ def install_manifest_assets(root: Path, manifest_rel: str, assets_rel: str, home
         if target not in entry["targets"]:
             continue
 
-        shared_path = shared_dir / entry["path"]
         target_path = target_dir / entry["path"]
         if target_path.exists():
             source_path = target_path
@@ -68,10 +66,7 @@ def render(root: Path) -> None:
         claude_path.write_text(json.dumps(claude_base, indent=2) + "\n")
 
     opencode_base = load_json(root / "assets" / "opencode" / "opencode.base.json")
-    if os.name == "nt":
-        opencode_dir = home_dir / ".config" / "opencode"
-    else:
-        opencode_dir = home_dir / ".config" / "opencode"
+    opencode_dir = home_dir / ".config" / "opencode"
     ensure_dir(opencode_dir)
     opencode_path = opencode_dir / "opencode.json"
     if opencode_path.exists():
