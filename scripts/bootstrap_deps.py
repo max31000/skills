@@ -229,6 +229,16 @@ def command_output(command: list[str]) -> str:
     return process.stdout
 
 
+def is_winget_package_installed(package_id: str) -> bool:
+    result = subprocess.run(
+        ["winget", "list", "--id", package_id, "--accept-source-agreements"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    return result.returncode == 0
+
+
 def build_package_items(root: Path, policy: dict) -> list[dict]:
     items: list[dict] = []
     if sys.platform == "darwin":
@@ -251,15 +261,17 @@ def build_package_items(root: Path, policy: dict) -> list[dict]:
     elif sys.platform.startswith("win"):
         manifest = root / "manifest" / "packages" / "winget-packages.json"
         package_ids = parse_winget_manifest(manifest)
+        has_winget = bool(shutil_which("winget"))
         for package_id in package_ids:
             canonical = normalize_package_name("winget", package_id)
+            installed = has_winget and is_winget_package_installed(package_id)
             items.append(
                 {
                     "name": canonical,
                     "display_name": package_id,
                     "manager": "winget",
                     "required_now": policy["packages"].get(canonical, {}).get("required_now", False),
-                    "installed": False,
+                    "installed": installed,
                     "outdated": False,
                 }
             )

@@ -14,6 +14,9 @@ SUPPORTED_TARGETS = {
     "manual-plugin": set(),
 }
 
+# Targets that support the --scope flag in compound-plugin
+SCOPE_SUPPORTED_TARGETS = {"claude", "all"}
+
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text())
@@ -40,6 +43,12 @@ def expand_verify_paths(paths: list[str], home: Path) -> list[Path]:
     return [Path(str(path).replace("${HOME}", str(home)).replace("~", str(home))) for path in paths]
 
 
+# compound-plugin writes skill directories named "ce:<skill>" which contain a
+# colon — a character that is illegal in Windows paths.  Until upstream fixes
+# this, skip compound-bunx installs on Windows.
+COMPOUND_BUNX_WINDOWS_BLOCKED = sys.platform.startswith("win")
+
+
 def preflight(plugin: dict, home: Path) -> tuple[bool, list[str]]:
     errors: list[str] = []
     for binary in plugin.get("requiredBinaries", []):
@@ -50,6 +59,14 @@ def preflight(plugin: dict, home: Path) -> tuple[bool, list[str]]:
         errors.append("network check failed")
 
     method = str(plugin.get("installMethod", ""))
+
+    if method == "compound-bunx" and COMPOUND_BUNX_WINDOWS_BLOCKED:
+        errors.append(
+            "compound-bunx is not supported on Windows: plugin writes directories "
+            "with ':' in the name (e.g. 'ce:brainstorm') which is illegal on Windows paths"
+        )
+        return (False, errors)
+
     supported = SUPPORTED_TARGETS.get(method, set())
     for target in plugin.get("targets", []):
         if supported and target not in supported:
@@ -69,7 +86,7 @@ def run_compound(plugin: dict) -> None:
     for target in plugin.get("targets", []):
         if mode in {"install", "install+sync"}:
             cmd = ["bunx", "@every-env/compound-plugin", "install", plugin_id, "--to", target]
-            if plugin.get("scope"):
+            if plugin.get("scope") and target in SCOPE_SUPPORTED_TARGETS:
                 cmd.extend(["--scope", plugin["scope"]])
             status("RUN", " ".join(cmd))
             subprocess.run(cmd, check=True)

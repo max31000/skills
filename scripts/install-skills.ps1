@@ -5,8 +5,8 @@
 #  Copies to:   ~/.config/opencode/skills/  (OpenCode native path)
 #
 #  Configuration:
-#    repos.conf      — external GitHub repos to clone skills from
-#    custom-skills/  — local skill definitions (SKILL.md files)
+#    repos.conf      - external GitHub repos to clone skills from
+#    custom-skills/  - local skill definitions (SKILL.md files)
 #
 #  Note: anthropic-skills:* (pdf, xlsx, pptx, docx, schedule) are built-in
 #  to Claude Code and do not require manual installation here.
@@ -14,30 +14,30 @@
 #  Usage: powershell -ExecutionPolicy Bypass -File install-skills.ps1
 # ============================================================================
 
-$ErrorActionPreference = "Stop"
-
 param(
     [switch]$Overwrite
 )
 
-# ── Script directory ────────────────────────────────────────────────────────
+$ErrorActionPreference = "Stop"
+
+# -- Script directory --------------------------------------------------------
 $ScriptDir  = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $RootDir    = Split-Path -Parent $ScriptDir
 $ConfFile   = Join-Path $RootDir "manifest\skills\repos.conf"
 $CustomDir  = Join-Path $RootDir "custom-skills"
 
-# ── Colors / helpers ────────────────────────────────────────────────────────
+# -- Colors / helpers --------------------------------------------------------
 function Write-Info  { param([string]$Msg) Write-Host "[INFO]  $Msg" -ForegroundColor Cyan }
 function Write-Ok    { param([string]$Msg) Write-Host "[OK]    $Msg" -ForegroundColor Green }
 function Write-Warn  { param([string]$Msg) Write-Host "[WARN]  $Msg" -ForegroundColor Yellow }
 function Write-Fail  { param([string]$Msg) Write-Host "[FAIL]  $Msg" -ForegroundColor Red; exit 1 }
 
-# ── Pre-flight checks ──────────────────────────────────────────────────────
+# -- Pre-flight checks -------------------------------------------------------
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) { Write-Fail "git is not installed" }
 if (-not (Test-Path $ConfFile))  { Write-Fail "repos.conf not found at $ConfFile" }
 if (-not (Test-Path $CustomDir)) { Write-Fail "custom-skills/ directory not found at $CustomDir" }
 
-# ── Build ALL_SKILLS dynamically from config ────────────────────────────────
+# -- Build ALL_SKILLS dynamically from config --------------------------------
 $AllSkills   = [System.Collections.Generic.List[string]]::new()
 $SkillSource = [System.Collections.Generic.List[string]]::new()
 
@@ -65,7 +65,7 @@ foreach ($skillMd in Get-ChildItem -Path $CustomDir -Filter "SKILL.md" -Recurse 
     $SkillSource.Add("custom")
 }
 
-# ── Paths ───────────────────────────────────────────────────────────────────
+# -- Paths -------------------------------------------------------------------
 $SkillsDir  = Join-Path $env:USERPROFILE ".claude\skills"
 $OpenCodeDir = Join-Path $env:USERPROFILE ".config\opencode\skills"
 $TmpDir     = Join-Path ([System.IO.Path]::GetTempPath()) "skills-install-$([System.IO.Path]::GetRandomFileName())"
@@ -78,7 +78,7 @@ Write-Info "Skills directory:   $SkillsDir"
 Write-Info "OpenCode copy:      $OpenCodeDir"
 Write-Host ""
 
-# ── Overwrite check ────────────────────────────────────────────────────────
+# -- Overwrite check ---------------------------------------------------------
 $existing = @()
 foreach ($s in $AllSkills) {
     $p = Join-Path $SkillsDir "$s\SKILL.md"
@@ -108,7 +108,7 @@ if ($existing.Count -gt 0) {
     Write-Host ""
 }
 
-# ── Helper: clone a repo and copy specific skill folders ──────────────────
+# -- Helper: clone a repo and copy specific skill folders --------------------
 function Install-FromRepo {
     param(
         [string]$RepoUrl,
@@ -121,7 +121,7 @@ function Install-FromRepo {
     $clonePath = Join-Path $TmpDir $RepoName
     $result = & git clone --depth 1 --quiet $RepoUrl $clonePath 2>&1
     if ($LASTEXITCODE -ne 0) {
-        Write-Warn "Failed to clone $RepoName — skipping"
+        Write-Warn "Failed to clone $RepoName - skipping"
         return
     }
 
@@ -154,7 +154,7 @@ function Install-FromRepo {
             Copy-Item -Path $fallback -Destination $destPath -Recurse -Force
             Write-Ok "  + $skill (from skills/)"
         } else {
-            Write-Warn "  ! $skill — SKILL.md not found in repo, skipping"
+            Write-Warn "  ! $skill - SKILL.md not found in repo, skipping"
         }
     }
 }
@@ -212,7 +212,7 @@ try {
     Write-Ok "Linked $count skills -> $OpenCodeDir"
 
     if ($usedCopyFallback) {
-        Write-Warn "Symlinks not available — used file copy instead."
+        Write-Warn "Symlinks not available - used file copy instead."
         Write-Warn "Enable Developer Mode (Settings > For Developers) for symlink support."
     }
     Write-Host ""
@@ -253,7 +253,7 @@ try {
     Write-Host "To uninstall: Remove-Item -Recurse -Force $SkillsDir, $OpenCodeDir"
 
 } finally {
-    # ── Cleanup ─────────────────────────────────────────────────────────────
+    # -- Cleanup -------------------------------------------------------------
     if (Test-Path $TmpDir) {
         Remove-Item -Path $TmpDir -Recurse -Force -ErrorAction SilentlyContinue
     }
